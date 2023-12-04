@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <link rel="stylesheet" href="/css/bootstrap-icons.css">
+    <title><%= title %></title>
+</head>
+<body>
+    <header>
+        <div>My application</div>
+    </header>
+
+    <main>
+        <div class="main-container">
+            <div class="thisArticle-container">
+                <div class="thisArticle-name"></div>
+            </div>
+
+            <div class="thisArticleText-container"></div>
+
+            <div class="thisArticleTest-container" hidden></div>
+
+            <div class="thisArticleFooter-container">
+                <div class="thisArticleTestPass">
+                    <i class="bi bi-play-circle-fill"></i>
+                    <div>Пройти тест</div>
+                </div>
+                
+                <div class="thisArticleTestFinish" hidden>
+                    <i class="bi bi-play-circle-fill"></i>
+                    <div>Отправить</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/article.js"></script>
+</body>
+</html>
