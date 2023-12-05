@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const qaSchema = new Schema({
     question: String,
     answer: String,
+    correct: String,
 })
 
 const articleSchema = new Schema({

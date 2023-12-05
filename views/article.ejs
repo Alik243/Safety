@@ -10,13 +10,13 @@
 </head>
 <body>
     <header>
-        <div>My application</div>
+        <div onclick="backToMainMenu()">My application</div>
     </header>
 
     <main>
         <div class="main-container">
             <div class="thisArticle-container">
-                <div class="thisArticle-name"></div>
+                <div class="thisArticle-name" onclick="backToText()"></div>
             </div>
 
             <div class="thisArticleText-container"></div>
@@ -28,8 +28,8 @@
                     <i class="bi bi-play-circle-fill"></i>
                     <div>Пройти тест</div>
                 </div>
-                
-                <div class="thisArticleTestFinish" hidden>
+
+                <div class="thisArticleTestFinish" onclick="submitAnswer()" hidden>
                     <i class="bi bi-play-circle-fill"></i>
                     <div>Отправить</div>
                 </div>
