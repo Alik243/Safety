@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="icons/bootstrap-icons.css"></link>
+    <link rel="stylesheet" href="css/bootstrap.css"></link>
+    <link rel="stylesheet" href="css/index.css"></link>
+    <link rel="stylesheet" href="css/adaptive.css"></link>
+
+    <title>Mergen | <%= title %></title>
+</head>
+<body>
+    <header class="f-between">
+        <div style="display: flex; margin-left: 24px;">
+            <div style="margin-right: 4px;">Mergen</div>
+            <div id="info-serialNumber"></div>
+        </div>
+
+        <div style="display: flex; margin-right: 24px; font-size: 14px;">
+            <div id="innerWidth" style="margin-right: 4px;"></div>
+            <div id="innerHeight"></div>
+            <button id="optional-button" style="border: 0; border-radius: 4px; margin-left: 10px;">
+                <i class="bi bi-gear-wide-connected"></i>
+            </button>
+        </div>
+
+        <!-- <div class="me-4">
+            <i class="bi bi-list" style="font-size: 20px;"></i>
+            
+            <div class="dropdown-menu" style="display: none;">
+                <div id="setTheme" class="d-flex align-items-end" style="padding-top: 8px;" onclick="setTheme()">
+                    <span>Темная тема</span>
+                    <label class="switch" for="setTheme">
+                        <input class="themeToggle" type="checkbox">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+
+                <div onclick="openModal(setPassword)">
+                    Изменить пароль
+                </div>
+
+                <div onclick="logout()" style="padding-bottom: 8px;">
+                    Выйти
+                </div>
+            </div>
+        </div> -->
+    </header>
+
+    <main>
+        <div class="video-container">
+            <!-- <div style="position: absolute; width: 100%; height: 100%; 
+                display: flex; align-items: center; justify-content: center;" hidden>
+                <div style="background: #eee; color: #333;
+                    font-size: 14px; border-radius: 6px; padding: 2px 8px;">
+                    Идет запись...
+                </div>
+            </div> -->
+
+            <video id="videoTag" autoplay muted controls></video>
+
+            <div id="recStatus" hidden>
+                <div class="circleRec"></div>
+                REC
+            </div>
+
+            <input type="hidden" id="loadSource" value=":1500/hls/stream.m3u8"/>
+        </div>
+
+        <div id="mainInfo">
+            <div class="audioWaves-container" style="display: none;">
+                <div class="audioWave-item">
+                    <div class="audioWave-text">L</div>
+                    <div id="audioWave-left" class="audioWave-progressBar">
+                        <div id="audioWave-leftProgress" class="audioWave-progress"></div>
+                    </div>
+                </div>
+                <div class="audioWave-item">
+                    <div class="audioWave-text">R</div>
+                    <div id="audioWave-right" class="audioWave-progressBar">
+                        <div id="audioWave-rightProgress" class="audioWave-progress"></div>
+                    </div>
+                </div>
+
+                <!-- <div id="volumeMeterr">0</div> -->
+            </div>
+
+            <div id="main-page" class="pages active">
+                <div class="battery-container">
+                    <div class="f-wrap" style="width: max-content; margin-right: 16px;">
+                        <div class="container-header" style="margin-bottom: 4px;">Заряд аккумулятора</div>
+    
+                        <div id="info-timeBattery" class="small-text">Приблизительное время работы:</div>
+                    </div>
+                    
+                    <div class="f-center" style="width: fit-content;">
+                        <div class="progress-bar">
+                            <progress value="0" min="0" max="100" style="visibility:hidden; height:0; width:0;"></progress>
+                        </div>
+
+                        <div class="progress-val">0%</div>
+                    </div>
+                </div>
+    
+                <div style="display: flex;">
+                    <div style="padding-right: 8px;">
+                        <div class="memory-container">
+                            <div style="display: flex; margin-bottom: 2px;">
+                                <div class="container-header" style="margin-right: 8px;">Память</div>
+        
+                                <div id="info-percentMemory" class="container-header">0%</div>
+                            </div>
+            
+                            <meter class="linear-progressBar" value="0" min="0" max="100" low="80" high="90"></meter>
+        
+                            <div id="info-timeMemory" class="small-text">Заполнится через:</div>
+                                
+                            <div class="small-text" style="display: flex;">
+                                <div id="info-freeMemory">0 Gb</div>
+                                <div class="mx-1">из</div>
+                                <div id="info-allMemory">0 Gb</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="temperature-container" style="width: 120px;">
+                            <div id="info-temperature" class="container-header" style="margin-bottom: 2px;">0°C</div>
+            
+                            <meter class="linear-progressBar" value="0" min="0" max="75" low="55" high="65"></meter>
+        
+                            <div class="small-text">Предел: X°</div>
+                                
+                            <div class="small-text">Автооткл: выкл</div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="info-container">
+                    <div class="f-between" style="width: 100%; margin-bottom: 6px;">
+                        <div class="container-header">Настройки медиа</div>
+    
+                        <div class="settingsModal-button" onclick="openModal(settingsModal)">Изменить</div>
+                    </div>
+    
+                    <div class="f-wrap small-text" style="width: 100%; margin-bottom: 2px;">
+                        <div style="margin-right: 4px;">Режим записи:</div>
+    
+                        <div id="info-writeMode">X</div>
+                    </div>
+    
+                    <div class="f-wrap small-text" style="width: 100%; margin-bottom: 2px;">
+                        <div style="margin-right: 4px;">Качество:</div>
+    
+                        <div style="display: flex;">
+                            <div id="info-videoRes">Х</div>
+                            <div class="mx-1">/</div>
+                            <div id="info-sampleR">X</div>
+                        </div>
+                    </div>
+    
+                    <div class="f-wrap small-text" style="width: 100%;">
+                        <div style="margin-right: 4px;">Битрейт:</div>
+    
+                        <div id="info-bitrate">Х</div>
+                    </div>
+                </div>
+    
+                <div class="buttons-container" style="width: 100%; margin-top: 12px;">
+                    <button id="onlyRecord-button" onclick="startRecord()">
+                        Запись
+                    </button>
+    
+                    <button id="multistream-button" onclick="startMultistream()">
+                        Мультистрим
+                    </button>
+
+                    <button id="stopRecord-button" style="width: 100%;" onclick="stopRecord()" hidden>
+                        Остановить запись
+                    </button>
+                </div>
+
+                <!-- <button class="startRecord-button f-center" onclick="startRecord()">
+                    <i class="bi bi-camera-video" style="margin-right: 16px; font-size: 21px;"></i>
+                    <div>Начать запись</div>
+                </button>
+
+                <button class="stopRecord-button f-center" onclick="stopRecord()" hidden>
+                    <i class="bi bi-camera-video" style="margin-right: 16px; font-size: 21px;"></i>
+                    <div>Остановить запись</div>
+                </button> -->
+            </div>
+
+            <div id="settings-page" class="pages" style="padding-bottom: 20px;">
+                <div class="settings-container">
+                    <div class="settings-header">Точка доступа</div>
+
+                    <div class="d-flex">
+                        <input type="text" class="settings-input" disabled>
+
+                        <button id="setAccessPoint" class="settings-button" style="margin-left: 12px;">Изменить</button>
+                    </div>
+                </div>
+
+                <div class="settings-container">
+                    <div class="settings-header">Дата и время</div>
+
+                    <div style="display: flex; font-size: 13px; margin-bottom: 6px;">
+                        <div class="me-2">Текущее время:</div>
+
+                        <div id="deviceTime"></div>
+                    </div>
+
+                    <div class="d-flex">
+                        <input type="datetime-local" id="setTime-value" class="settings-input">
+
+                        <button class="settings-button" style="margin-left: 12px;" onclick="setTime()">Изменить</button>
+                    </div>
+                </div>
+
+                <div class="settings-container">
+                    <div class="settings-header">Пульт ДУ</div>
+
+                    <div class="d-flex">
+                        <button class="rc-button" onclick="">Привязать пульт</button>
+                    </div>
+                </div>
+
+                <div class="mainSettings-container">
+                    <div class="settings-container" style="margin-top: 0;">
+                        <div class="settings-header">Защита от перегрева</div>
+    
+                        <div class="d-flex">
+                            <input type="checkbox" id="autoOff" class="me-2">
+
+                            <label for="autoOff" class="container-text">Автоотключение записи (при 65°C)</label>
+                        </div>
+                    </div>
+
+                    <div class="settings-container">
+                        <div class="settings-header">Запись на SD-карту</div>
+    
+                        <div class="d-flex">
+                            <div class="f-center me-3">
+                                <input type="radio" name="sdWrite" id="sdCycle" class="me-1">
+                                <label for="sdCycle" class="container-text">Циклическая</label>
+                            </div>
+
+                            <div class="f-center">
+                                <input type="radio" name="sdWrite" id="sdUponFilling" class="me-1">
+                                <label for="sdUponFilling" class="container-text">По заполнению</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mainSettings-button-container">
+                        <button id="setMainSettings" class="settings-button">Применить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="files-page" class="pages" style="padding-bottom: 20px;">
+            <div class="filesOption-container f-between" hidden>
+                <div class="selectedFilename">Название записи</div>
+
+                <div class="selectedFiles-container" hidden>
+                    <div class="f-center me-3" onclick="selectAllFiles()">
+                        <div class="selectAll-input"></div>
+                        Выбрать все
+                    </div>
+
+                    <div class="d-flex">
+                        Выбрано:
+                        <div class="selectedFiles-count ms-1"></div>
+                    </div>
+                </div>
+
+                <button id="goSelect-button" class="settings-button">Выбрать</button>
+            </div>
+
+            <div class="files-container"></div>
+
+            <div class="files-container-spinner f-center" style="margin-top: 60px;">
+                <div class="spinner"></div>
+            </div>
+
+            <div class="action-container" hidden>
+                <button class="download-button f-center" style="width: calc(50% - 6px);">
+                    <i class="bi bi-download" style="font-size: 20px; margin-right: 12px;"></i>
+
+                    <div style="text-align: left;">
+                        <div>Скачать</div>
+                        <div class="files-size"></div>
+                    </div>
+                </button>
+                
+                <button class="delete-button f-center" style="width: calc(50% - 6px);">
+                    <i class="bi bi-trash" style="font-size: 20px; margin-right: 12px;"></i>
+
+                    <div>Удалить</div>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="navigation">
+            <div class="navigation-item active" name="main" onclick="navigation(this)">
+                <i class="bi bi-house"></i>
+                <div class="navigation-item-text">Главная</div>
+            </div>
+            <div class="navigation-item" name="settings" onclick="navigation(this)">
+                <i class="bi bi-gear"></i>
+                <div class="navigation-item-text">Настройки</div>
+            </div>
+            <div class="navigation-item" name="files" onclick="navigation(this)">
+                <i class="bi bi-folder"></i>
+                <div class="navigation-item-text">Файлы</div>
+            </div>
+        </div>
+    </footer>
+
+    <modals>
+        <div id="settingsModal" class="modal-overlay" style="display: none;">
+            <div class="modal-block">
+                <div class="container-header" style="margin: 0 0 16px 8px;">Настройки</div>
+            
+                <div class="settings-item" style="margin-bottom: 12px;">
+                    <div class="container-text" style="width: 55%;">Режим записи</div>
+    
+                    <select id="settings-writeMode" style="width: 45%;">
+                        <option value="eco">Эконом</option>
+                        <option value="balance">Баланс</option>
+                        <option value="max">Макс. качество</option>
+                    </select>
+                </div>
+    
+                <div class="settings-item">
+                    <div class="container-text" style="width: 55%;">Длительность (мин)</div>
+    
+                    <div style="width: 45%;">
+                        <div class="settings-duration multi-toggle">
+                            <a class="settings-duration-item toggle-item">5</a>
+                            <a class="settings-duration-item toggle-item">10</a>
+                            <a class="settings-duration-item toggle-item">15</a>
+                            <a class="settings-duration-item toggle-item">30</a>
+                            <a class="settings-duration-item toggle-item">60</a>
+                            <span class="settings-duration-indicator toggle-indicator"></span>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="settings-more" onclick="moreSettings()">
+                    <i class="bi bi-chevron-double-down me-1"></i>
+                    <div>Расширенные настройки</div>
+                </div>
+                
+                <div class="settings-all" style="margin-top: 12px;">
+                    <div class="settings-type">
+                        <div class="f-center active" name="settings-video" onclick="showSettings(this)">Видео</div>
+    
+                        <div class="f-center" name="settings-audio" onclick="showSettings(this)">Аудио</div>
+                    </div>
+    
+                    <div class="settings-all-container">
+                        <div class="settings-video active">
+                            <div class="settings-item" style="margin-bottom: 12px;">
+                                <div class="container-text" style="width: 60%;">Частота кадров (fps)</div>
+    
+                                <div style="width: 40%;">
+                                    <div class="settings-fps multi-toggle">
+                                        <a class="settings-fps-item toggle-item">5</a>
+                                        <a class="settings-fps-item toggle-item">10</a>
+                                        <a class="settings-fps-item toggle-item">20</a>
+                                        <a class="settings-fps-item toggle-item">30</a>
+                                        <span class="settings-fps-indicator toggle-indicator"></span>
+                                    </div>
+                                </div>
+                            </div>
+        
+                            <div class="settings-item" style="margin-bottom: 12px;">
+                                <div class="container-text" style="width: 60%;">Уровень сжатия</div>
+        
+                                <select id="settings-videoCompression" style="width: 40%;">
+                                    <option value="low">Низкий</option>
+                                    <option value="medium">Средний</option>
+                                    <option value="high">Высокий</option>
+                                </select>
+                            </div>
+        
+                            <div class="settings-item" style="margin-bottom: 12px;">
+                                <div class="container-text" style="width: 60%;">Разрешение</div>
+        
+                                <select id="settings-videoQuality" style="width: 40%;">
+                                    <option value="480p">480p</option>
+                                    <option value="720p">720p</option>
+                                    <option value="1080p">1080p</option>
+                                </select>
+                            </div>
+        
+                            <div class="settings-item" style="margin-bottom: 12px;">
+                                <div class="container-text" style="width: 60%;">Формат файла</div>
+        
+                                <select id="settings-videoFormat" style="width: 40%;">
+                                    <option value="mp4">mp4</option>
+                                    <option value="mkv">avi</option>
+                                    <option value="avi">avi</option>
+                                </select>
+                            </div>
+        
+                            <div class="settings-item disabled">
+                                <div class="container-text" style="width: 60%;">Напряжение камеры</div>
+        
+                                <select id="settings-videoAnalog" style="width: 40%;">
+                                    <option value="5">5 V</option>
+                                    <option value="7">7 V</option>
+                                    <option value="12">12 V</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-audio">
+                            <div class="settings-item" style="margin-bottom: 12px;">
+                                <div class="container-text" style="width: 60%;">Дискретизация (кГц)</div>
+        
+                                <div style="width: 40%;">
+                                    <div class="settings-sampleR multi-toggle">
+                                        <a class="settings-sampleR-item toggle-item">16</a>
+                                        <a class="settings-sampleR-item toggle-item">24</a>
+                                        <a class="settings-sampleR-item toggle-item">32</a>
+                                        <a class="settings-sampleR-item toggle-item">48</a>
+                                        <span class="settings-sampleR-indicator toggle-indicator"></span>
+                                    </div>
+                                </div>
+                            </div>
+        
+                            <div class="settings-item" style="margin-bottom: 12px;">
+                                <div class="container-text" style="width: 60%;">Уровень сжатия</div>
+        
+                                <select id="settings-audioCompression" style="width: 40%;">
+                                    <option value="low">Низкий</option>
+                                    <option value="medium">Средний</option>
+                                    <option value="high">Высокий</option>
+                                </select>
+                            </div>
+        
+                            <div class="settings-item disabled" style="margin-bottom: 12px;">
+                                <div class="container-text" style="width: 60%;">Сжатие аудио (AAC)</div>
+                                
+                                <div style="display: flex; width: 40%;">
+                                    <label class="switch">
+                                        <input class="" type="checkbox">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+        
+                            <div class="settings-item">
+                                <div class="container-text" style="width: 60%;">Микрофоны</div>
+        
+                                <select id="settings-audioChannels" style="width: 40%;">
+                                    <option value="left">Моно (L)</option>
+                                    <option value="right">Моно (R)</option>
+                                    <option value="stereo">Стерео</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="buttons-container">
+                    <button class="cancel-button" style="width: calc(50% - 6px);" onclick="closeModal(settingsModal)">
+                        Отмена
+                    </button>
+                    
+                    <button class="settings-button" style="width: calc(50% - 6px);" onclick="collectSettings()">
+                        Применить
+                    </button>
+                </div>
+            </div>
+        </div>
+    
+        <div id="startStreamModal" class="modal-overlay" style="display: none;">
+            <div class="modal-block">
+                <div>
+                    Восстановить стрим?
+                </div>
+    
+                <div class="buttons-container">
+                    <button class="settings-button" style="width: calc(50% - 6px);" onclick="startStream(startStreamModal)">
+                        Да
+                    </button>
+    
+                    <button class="cancel-button" style="width: calc(50% - 6px);" onclick="closeModal(startStreamModal)">
+                        Нет
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="stopMultistreamModal" class="modal-overlay" style="display: none;">
+            <div class="modal-block">
+                <div>
+                    Для просмотра файлов отключите мультистрим
+                </div>
+    
+                <div class="buttons-container">
+                    <button class="cancel-button" style="width: 100%;" onclick="closeModal(stopMultistreamModal)">
+                        Ок
+                    </button>
+                </div>
+            </div>
+        </div>
+    
+        <!-- <div id="confirmRCModal" class="modal-overlay" style="display: none;">
+            <div class="modal-block">
+                <div>К устройству уже привязан пульт. Хотите привязать новый?</div>
+                
+                <div class="buttons-container">
+                    <button class="settings-button" style="width: calc(50% - 6px);" onclick="addRC()">
+                        Да
+                    </button>
+    
+                    <button class="cancel-button" style="width: calc(50% - 6px);" onclick="closeModal(confirmRCModal)">
+                        Нет
+                    </button>
+                </div>
+            </div>
+        </div> -->
+
+        <div id="deleteFileModal" class="modal-overlay" style="display: none;">
+            <div class="modal-block">
+                <div id="deleteFilename"></div>
+                
+                <div class="buttons-container">
+                    <button id="deleteFile" class="settings-button" style="width: calc(50% - 6px);">
+                        Да
+                    </button>
+    
+                    <button class="cancel-button" style="width: calc(50% - 6px);" onclick="closeModal(deleteFileModal)">
+                        Нет
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- <div id="destroyRecordModal" class="modal-overlay" style="display: none;">
+            <div class="modal-block">
+                <div id="container-text">
+                    Для корректности работы требуется отключить запись
+                </div>
+
+                <div class="buttons-container">
+                    <button class="cancel-button" style="width: 100%;" onclick="closeModal(destroyRecordModal)">
+                        Ок
+                    </button>
+                </div>
+            </div>
+        </div> -->
+    </modals>
+
+    <script src="js/hls.js"></script>
+    
+    <script src="js/index.js"></script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/css/bootstrap.css">
+    <title><%= title %></title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            height: 100vh;
+        }
+
+        .loginForm {
+            width: 400px;
+            padding: 20px;
+            background: #aaa;
+            border-radius: 8px;
+        }
+
+        input {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="loginForm">
+        <div class="d-flex justify-content-center mb-2" style="font-size: 20px;">
+            Авторизация
+        </div>
+
+        <label for="username">Имя пользователя:</label>
+        <input type="text" id="username" class="mt-2" required>
+    
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" class="mt-2" required>
+    
+        <button class="w-100 mt-3" onclick="auth()">Войти</button>
+    </div>
+
+    <script>
+        function auth() {
+            let data = {
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value
+            }
+
+            let postRequest = {
+                method: 'post',
+                body: JSON.stringify(data),
+            }
+
+            fetch('/auth', postRequest)
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                })
+        }
+    </script>
+</body>
+</html>

@@ -1,8 +1,9 @@
 const express = require('express');
 const path = require('path');
-// const fs = require('fs');
+
 const mongoose = require('mongoose');
 const Articles = require('./models/articles')
+const Users = require('./models/users')
 
 const app = express();
 
@@ -22,6 +23,32 @@ app.use(express.static(__dirname + "/static"));
 
 app.listen(PORT, (error) => {
     error ? console.log(error) : console.log(`Server is running on port ${PORT}`);
+})
+
+app.get('/login', (req, res) => {
+    const title = 'Login';
+
+    res.render(createPath('login'), { title });
+})
+
+app.post('/auth', (req, res) => {
+    console.log(req.body);
+
+    let username = req.body.username;
+
+    Users
+        .findOne({ username })
+        .then((user) => {
+            if (user.password == password) {
+                res.render(createPath('index'), { title });
+
+            } else {
+                res.status(401).send();
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        })
 })
 
 app.get('/', (req, res) => {
