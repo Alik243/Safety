@@ -1,11 +1,14 @@
 const express = require('express');
+const app = express();
+
+const session = require('express-session');
+const store = new session.MemoryStore();
+
 const path = require('path');
 
 const mongoose = require('mongoose');
 const Articles = require('./models/articles')
-const Users = require('./models/users')
-
-const app = express();
+const Users = require('./models/users');
 
 app.set('view engine', 'ejs');
 
@@ -19,10 +22,37 @@ mongoose
 
 const createPath = (page) => path.resolve(__dirname, 'views', `${page}.ejs`);
 
-app.use(express.static(__dirname + "/static"));
-
 app.listen(PORT, (error) => {
     error ? console.log(error) : console.log(`Server is running on port ${PORT}`);
+})
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+app.use(express.static(__dirname + "/static"));
+
+app.use(session({
+    secret: 'myApp',
+    resave: true,
+    saveUninitialized: false,
+    rolling: true,
+    cookie: {
+        maxAge: 60 * 60 * 1000
+    },
+    store: store
+}))
+
+app.use((req, res, next) => {
+    if (req.path == '/login' || req.path == '/auth') {
+        return next();
+    }
+
+    if (req.session && req.session.authenticated) {
+        req.session.touch();
+        next();
+    } else {
+        res.redirect('/login');
+    }
 })
 
 app.get('/login', (req, res) => {
@@ -32,18 +62,21 @@ app.get('/login', (req, res) => {
 })
 
 app.post('/auth', (req, res) => {
-    console.log(req.body);
-
-    let username = req.body.username;
+    const user = req.body;
+    // let username = user.username;
 
     Users
-        .findOne({ username })
-        .then((user) => {
-            if (user.password == password) {
-                res.render(createPath('index'), { title });
-
+        .findOne({ username: user.username })
+        .then((data) => {
+            if (!data) {
+                res.status(404).send();
             } else {
-                res.status(401).send();
+                if (data.password == user.password) {
+                    req.session.authenticated = true;
+                    res.redirect('/');
+                } else {
+                    res.status(401).send();
+                }
             }
         })
         .catch((error) => {
@@ -55,6 +88,11 @@ app.get('/', (req, res) => {
     const title = 'Home';
 
     res.render(createPath('index'), { title });
+})
+
+app.get('/logout', (req, res) => {
+    req.session.destroy();
+    res.redirect('/login');
 })
 
 app.get('/getArticles', (req, res) => {
@@ -94,4 +132,15 @@ app.post('/addArticle', (req, res) => {
         .save()
         .then((res) => res.send(res))
         .catch((err) => console.log(err))
+})
+
+app.get('/getUsers', (req, res) => {
+    Users
+        .find()
+        .then((users) => {
+            res.status(200).send(users);
+        })
+        .catch((error) => {
+            console.log(error);
+        })
 })

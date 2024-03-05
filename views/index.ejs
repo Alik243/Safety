@@ -11,6 +11,8 @@
 <body>
     <header>
         <div>My application</div>
+
+        <div onclick="logout()">Выйти</div>
     </header>
     
     <main>
@@ -44,6 +46,22 @@
                 </div>
 
                 <div class="articles-container"></div>
+            </div>
+
+            <div class="catalog-container">
+                <div style="font-size: 36px; font-family: inter-medium;">Пользователи</div>
+
+                <div class="f-between">
+                    <div class="setting-text" onclick="">
+                        + Добавить пользователя
+                    </div>
+
+                    <button class="customButton" onclick="">
+                        Удалить
+                    </button>
+                </div>
+
+                <div class="users-container"></div>
             </div>
         </div>
     </main>

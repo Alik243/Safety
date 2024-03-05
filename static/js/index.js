@@ -1,22 +1,23 @@
 function submitRequest(url, method, data) {
-    let requestOptions = {
+    return fetch(url, {
         method: method,
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
-    }
+    }).then(res => {
+        if (!res.ok) throw res;
 
-    return fetch(url, requestOptions)
-        .then(res => {
-            if (!res.ok) {
-                throw new Error(`HTTP error! Status: ${res.status}`);
-            }
-            return res.json();
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        })
+        if (res.redirected) {
+            window.location.replace(res.url);
+        }
+
+        return res.json();
+    }).catch(err => Promise.reject(err))
+}
+
+function logout() {
+    submitRequest('/logout')
 }
 
 submitRequest('/getArticles')
@@ -70,3 +71,30 @@ function chooseArticle(article) {
 //             console.log('added article!')
 //         })
 // })
+
+// function getUsers() {
+    submitRequest('/getUsers')
+      .then((res) => {
+            res.forEach(element => {
+                renderUsers(element);
+            });
+        })
+// } getUsers();
+
+function renderUsers(user) {
+    let template = `
+        <div class="user-item" name="${user._id}" onclick="">
+            <input type="checkbox" class="" style="width: 16px">
+
+            <div style="display: flex; flex: 1; margin-inline: 32px">
+                <div style="width: 50%">${user.name}</div>
+
+                <div style="width: 50%; color: #777">${user.job}</div>
+            </div>
+
+            <i class="bi bi-three-dots"></i>
+        </div>
+    `
+
+    document.querySelector('.users-container').insertAdjacentHTML('afterbegin', template)
+}

@@ -3,43 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/index.css">
     <link rel="stylesheet" href="/css/bootstrap.css">
     <title><%= title %></title>
     <style>
+        @font-face {
+            font-family: inter-medium;
+            src: url(/css/Inter-Medium.ttf);
+        }
+
         body {
             display: flex;
             justify-content: center;
             align-items: center;
             margin: 0;
             height: 100vh;
+            font-family: inter-medium;
         }
 
         .loginForm {
-            width: 400px;
-            padding: 20px;
-            background: #aaa;
-            border-radius: 8px;
+            width: 300px;
+            padding: 24px;
+            background: #fafafa;
+            border: 1px solid #d2d2d2;
+            border-radius: 12px;
         }
 
-        input {
+        input, button {
             width: 100%;
+            height: 32px;
+            margin-top: 16px;
+            padding-inline: 12px;
+            border: 1px solid #d2d2d2;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
     <div class="loginForm">
-        <div class="d-flex justify-content-center mb-2" style="font-size: 20px;">
-            Авторизация
-        </div>
-
-        <label for="username">Имя пользователя:</label>
-        <input type="text" id="username" class="mt-2" required>
-    
-        <label for="password">Пароль:</label>
-        <input type="password" id="password" class="mt-2" required>
-    
-        <button class="w-100 mt-3" onclick="auth()">Войти</button>
+        <div class="d-flex justify-content-center" style="font-size: 20px;">Авторизация</div>
+        <input type="text" id="username" placeholder="Введите логин" required>
+        <input type="password" id="password" placeholder="Введите пароль" required>
+        <button onclick="auth()">Войти</button>
     </div>
 
     <script>
@@ -49,14 +53,33 @@
                 password: document.getElementById('password').value
             }
 
-            let postRequest = {
-                method: 'post',
-                body: JSON.stringify(data),
-            }
-
-            fetch('/auth', postRequest)
+            submitRequest('/auth', 'post', data)
+                .then(res => {
+                    window.location.href = '/';
+                })
                 .catch(error => {
                     console.error('Ошибка:', error);
+                })
+        }
+
+        function submitRequest(url, method, data) {
+            let requestOptions = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            }
+
+            return fetch(url, requestOptions)
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! Status: ${res.status}`);
+                    }
+                    return res.json();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
                 })
         }
     </script>
