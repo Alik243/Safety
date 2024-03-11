@@ -66,13 +66,16 @@ app.post('/auth', (req, res) => {
     // let username = user.username;
 
     Users
-        .findOne({ username: user.username })
+        .findOne({ email: user.username })
         .then((data) => {
             if (!data) {
                 res.status(404).send();
             } else {
                 if (data.password == user.password) {
                     req.session.authenticated = true;
+                    req.session.username = data.name;
+                    req.session.job = data.job;
+                    req.session.role = data.role;
                     res.redirect('/');
                 } else {
                     res.status(401).send();
@@ -86,8 +89,11 @@ app.post('/auth', (req, res) => {
 
 app.get('/', (req, res) => {
     const title = 'Home';
+    const username = req.session.username;
+    const job = req.session.job;
+    const role = req.session.role;
 
-    res.render(createPath('index'), { title });
+    res.render(createPath('index'), { title, username, job, role });
 })
 
 app.get('/logout', (req, res) => {
@@ -126,15 +132,17 @@ app.get('/article/:articleId/info', (req, res) => {
 })
 
 app.post('/addArticle', (req, res) => {
-    const { text } = req.body;
-    const article = new Article({ text });
+    const { name, text, fullText } = req.body;
+    const article = new Articles({ name, text, fullText });
     article
         .save()
-        .then((res) => res.send(res))
+        .then(() => res.sendStatus(200))
         .catch((err) => console.log(err))
 })
 
 app.get('/getUsers', (req, res) => {
+    if (req.session.role != 'admin') return;
+
     Users
         .find()
         .then((users) => {
@@ -143,4 +151,22 @@ app.get('/getUsers', (req, res) => {
         .catch((error) => {
             console.log(error);
         })
+})
+
+app.post('/addUser', (req, res) => {
+    const { email, password, name, job } = req.body;
+    const user = new Users({ email, password, name, job });
+    user
+        .save()
+        .then(() => res.sendStatus(200))
+        .catch((err) => console.log(err))
+})
+
+app.post('/deleteUser', (req, res) => {
+    const { userId } = req.body;
+    
+    Users
+        .deleteOne({ _id: userId })
+        .then(() => res.sendStatus(200))
+        .catch((err) => console.log(err))
 })

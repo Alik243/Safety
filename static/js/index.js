@@ -1,3 +1,5 @@
+const isAdmin = document.getElementById('isAdmin');
+
 function submitRequest(url, method, data) {
     return fetch(url, {
         method: method,
@@ -12,7 +14,13 @@ function submitRequest(url, method, data) {
             window.location.replace(res.url);
         }
 
-        return res.json();
+        const contentType = res.headers.get('Content-Type');
+    
+        if (contentType && contentType.includes('application/json')) {
+            return res.json();
+        } else {
+            return res.text();
+        }
     }).catch(err => Promise.reject(err))
 }
 
@@ -20,13 +28,17 @@ function logout() {
     submitRequest('/logout')
 }
 
-submitRequest('/getArticles')
-    .then((res) => {
-        res.forEach(element => {
-            renderArticles(element)
-        });
-    })
+function getArticles() {
+    // document.querySelector('.articles-container').innerText = '';
 
+    submitRequest('/getArticles')
+        .then((res) => {
+            res.forEach(element => {
+                renderArticles(element)
+            });
+        })
+}
+getArticles();
 
 function renderArticles(article) {
     let template = `
@@ -54,7 +66,7 @@ function renderArticles(article) {
         </div>
     `
 
-    document.querySelector('.articles-container').insertAdjacentHTML('afterbegin', template)
+    document.querySelector('.articles-container').insertAdjacentHTML('beforeend', template)
 }
 
 function chooseArticle(article) {
@@ -72,14 +84,17 @@ function chooseArticle(article) {
 //         })
 // })
 
-// function getUsers() {
+function getUsers() {
+    document.querySelector('.users-container').innerText = '';
+
     submitRequest('/getUsers')
       .then((res) => {
             res.forEach(element => {
                 renderUsers(element);
             });
         })
-// } getUsers();
+} 
+if (isAdmin) getUsers();
 
 function renderUsers(user) {
     let template = `
@@ -97,4 +112,55 @@ function renderUsers(user) {
     `
 
     document.querySelector('.users-container').insertAdjacentHTML('afterbegin', template)
+}
+
+function openModal(element) {
+    element.showModal();
+}
+
+function closeModal(element) {
+    element.close();
+}
+
+function addUser() {
+    let data = {
+        email: document.getElementById('add-login').value,
+        password: document.getElementById('add-password').value,
+        name: document.getElementById('add-name').value,
+        job: document.getElementById('add-job').value
+    }
+
+    submitRequest('/addUser', 'post', data)
+        .then(() => {
+            closeModal(document.getElementById('addUserModal'));
+            getUsers();
+        })
+}
+
+function deleteUser() {
+    document.querySelectorAll('.user-item').forEach(user => {
+        if (user.querySelector('input').checked) {
+            let data = {
+                userId: user.getAttribute('name')
+            }
+            submitRequest('/deleteUser', 'post', data)
+                .then(() => {
+                    user.remove();
+                })
+        }
+    })
+}
+
+function addArticle() {
+    let data = {
+        name: document.getElementById('addArticle-name').value,
+        text: document.getElementById('addArticle-text').value,
+        fullText: document.getElementById('addArticle-fullText').value
+    }
+
+    submitRequest('/addArticle', 'post', data)
+        .then(() => {
+            closeModal(document.getElementById('addArticleModal'));
+            window.location.reload();
+        })
 }

@@ -22,15 +22,16 @@ const articleSchema = new Schema({
     },
     imagePath: {
         type: String,
-        required: true
+        // required: true
     },
     passedCount: {
         type: String,
-        required: true
+        default: '0'
     },
     passingTime: {
         type: String,
-        required: true
+        default: '0',
+        // required: true
     },
     questionsAndAnswers: [qaSchema]
 })

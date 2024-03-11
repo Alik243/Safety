@@ -12,17 +12,19 @@
     <header>
         <div>My application</div>
 
+        <input type="checkbox" id="isAdmin" hidden <% if (role == 'admin') { %> checked <% } %>>
+
         <div onclick="logout()">Выйти</div>
     </header>
     
     <main>
         <div class="main-container">
             <div class="head-container">
-                <div id="userName">Сидоров Сидор Сидорович</div>
+                <div id="userName"><%= username %></div>
 
                 <div class="d-flex" style="color: #777;">
                     <i class="bi bi-person-circle me-2"></i>
-                    <div id="userRole">Инженер-разработчик</div>
+                    <div id="userRole"><%= job %></div>
                 </div>
 
                 <div class="find-container">
@@ -37,34 +39,80 @@
                     <div class="catalog-type active">
                         <span>Новые</span>
                     </div>
-                    <div class="catalog-type">
+                    <div class="catalog-type" style="opacity: .5;">
                         <span>Обязательные</span>
                     </div>
-                    <div class="catalog-type">
+                    <div class="catalog-type" style="opacity: .5;">
                         <span>Дополнительные</span>
                     </div>
                 </div>
 
-                <div class="articles-container"></div>
+                <div class="articles-container">
+                    <% if (role == 'admin') { %>
+                        <div class="article-card f-center" style="margin-bottom: 25px;" onclick="openModal(addArticleModal)">
+                            <i class="bi bi-plus-lg" style="font-size: 52px; color: #777;"></i>
+                        </div>
+                    <% } %>
+                </div>
             </div>
 
-            <div class="catalog-container">
-                <div style="font-size: 36px; font-family: inter-medium;">Пользователи</div>
+            <% if (role == 'admin') { %>
+                <div class="catalog-container">
+                    <div style="font-size: 36px; font-family: inter-medium;">Пользователи</div>
 
-                <div class="f-between">
-                    <div class="setting-text" onclick="">
-                        + Добавить пользователя
+                    <div class="f-between">
+                        <div class="setting-text" onclick="openModal(addUserModal)">
+                            + Добавить пользователя
+                        </div>
+
+                        <button class="customButton" onclick="deleteUser()">
+                            Удалить
+                        </button>
                     </div>
 
-                    <button class="customButton" onclick="">
-                        Удалить
-                    </button>
+                    <div class="users-container"></div>
                 </div>
-
-                <div class="users-container"></div>
-            </div>
+            <% } %>
         </div>
     </main>
+
+    <modals>
+        <% if (role == 'admin') { %>
+            <dialog id="addUserModal" class="modal-container">
+                <div style="font-size: 22px;">Добавить пользователя</div>
+    
+                <input type="text" id="add-login" placeholder="Логин">
+    
+                <input type="text" id="add-password" placeholder="Пароль">
+    
+                <input type="text" id="add-name" placeholder="Имя пользователя">
+                
+                <input type="text" id="add-job" placeholder="Должность">
+    
+                <div class="d-flex">
+                    <button class="btn btn-secondary me-2 w-100" onclick="closeModal(addUserModal)">Закрыть</button>
+    
+                    <button class="btn btn-success ms-2 w-100" onclick="addUser()">Добавить</button>
+                </div>
+            </dialog>
+
+            <dialog id="addArticleModal" class="modal-container" style="width: 600px;">
+                <div style="font-size: 22px;">Добавить статью</div>
+    
+                <input type="text" id="addArticle-name" placeholder="Название">
+
+                <input type="text" id="addArticle-text" placeholder="Описание">
+    
+                <textarea id="addArticle-fullText" rows="20" placeholder="Текст"></textarea>
+    
+                <div class="d-flex">
+                    <button class="btn btn-secondary me-2 w-100" onclick="closeModal(addArticleModal)">Закрыть</button>
+    
+                    <button class="btn btn-success ms-2 w-100" onclick="addArticle()">Добавить</button>
+                </div>
+            </dialog>
+        <% } %>
+    </modals>
 
     <script src="/js/index.js"></script>
 </body>
