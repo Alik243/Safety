@@ -115,19 +115,65 @@ app.get('/getArticles', (req, res) => {
 app.get('/article/:articleId', (req, res) => {
     const title = 'Article';
 
-    let article = req.params.articleId;
+    const article = req.params.articleId;
+    const role = req.session.role;
 
-    res.render(createPath('article'), { title, article });
+    res.render(createPath('article'), { title, article, role });
 })
 
 app.get('/article/:articleId/info', (req, res) => {
     Articles
         .findOne({ _id: req.params.articleId }).lean()
         .then((article) => {
+            for (let key in article.questionsAndAnswers) {
+                article.questionsAndAnswers[key].correct = ''; 
+            }
+            
             res.status(200).send(article);
         })
         .catch((error) => {
             console.log(error);
+        })
+})
+
+app.post('/article/:articleId/addTest', (req, res) => {
+    Articles
+        .findOne({ _id: req.params.articleId })
+        .then((article) => {
+            article.questionsAndAnswers = '';
+
+            for (let key in req.body) {
+                article.questionsAndAnswers[key] = req.body[key];
+            }
+            
+            article
+                .save()
+                .then(() => res.sendStatus(200))
+                .catch((err) => console.log(err))
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+})
+
+app.post('/article/:articleId/submitTest', (req, res) => {
+    Articles
+        .findOne({ _id: req.params.articleId })
+        .then((article) => {
+            let answers = [];
+
+            for (const [key, value] of Object.entries(req.body)) {
+                if (article.questionsAndAnswers[key].correct === value) {
+                    answers.push(true);
+                } else {
+                    answers.push(false);
+                }
+            }
+
+            res.status(200).send(answers);
+        })
+        .catch((err) => {
+            console.log(err);
         })
 })
 

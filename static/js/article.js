@@ -19,7 +19,7 @@ function submitRequest(url, method, data) {
         })
 }
 
-let testAnswers;
+// let testAnswers;
 
 submitRequest(window.location.href + '/info')
     .then((res) => {
@@ -31,7 +31,7 @@ submitRequest(window.location.href + '/info')
 
         document.querySelector('.thisArticleTestPass').onclick = function() {
             goTest(res);
-            testAnswers = res.questionsAndAnswers;
+            // testAnswers = res.questionsAndAnswers;
         };
     })
 
@@ -47,7 +47,7 @@ function goTest(article) {
     for (let i = 0; i <= questionsCount - 1; i++) {
         let template = `
             <div class="thisArticleTest-item">
-                <div class="thisArticleQuestion-container">${i + 1} ${article.questionsAndAnswers[i].question}</div>
+                <div class="thisArticleQuestion-container">${i + 1}. ${article.questionsAndAnswers[i].question}</div>
 
                 <div class="thisArticleAnswer-container">
                     <label>
@@ -58,9 +58,6 @@ function goTest(article) {
                     </label>
                     <label>
                         <input type="radio" name="q${i + 1}" value="C"> C) ${article.questionsAndAnswers[i].answer.a3 || null}
-                    </label>
-                    <label>
-                        <input type="radio" name="q${i + 1}" value="D"> D) ${article.questionsAndAnswers[i].answer.a4 || null }
                     </label>
                 </div>
             </div>
@@ -81,19 +78,14 @@ function submitAnswer() {
         }
     })
 
-    checkAnswer(answers);
-}
-
-function checkAnswer(answers) {
-    let correctAnswers = 0;
-
-    for (let i = 0; i < testAnswers.length; i++) {
-        if (answers[i] == testAnswers[i].correct) {
-            correctAnswers++;
-        }
-    }
-
-    alert("Количество верных ответов - " + correctAnswers);
+    submitRequest(window.location.href + '/submitTest', 'post', answers)
+        .then((res) => {
+            let correctCount = 0;
+            res.forEach(answer => {
+                if (answer) correctCount++;
+            })
+            alert("Количество верных ответов - " + correctCount);
+        })
 }
 
 function backToText() {
@@ -105,4 +97,72 @@ function backToText() {
 
 function backToMainMenu() {
     window.location.href = '/';
+}
+
+let qn = 0;
+
+function addQuestion() {
+    qn++;
+
+    let template = `
+        <div id="addTest-item-${qn}">
+            <div class="d-flex">
+                <div style="width: 21px;">${qn + 1}.</div>
+                <input type="text" class="addTest-question w-100" style="margin-bottom: 12px;" placeholder="Вопрос">
+            </div>
+
+            <div class="d-flex">
+                <div class="addTest-answer-1" style="display: flex;">
+                    <input type="radio" name="addTest-input-${qn}" class="me-2" value="A">
+                    <input type="text" class="addTest-text w-100" placeholder="Ответ 1">
+                </div>
+                <div class="addTest-answer-2" style="display: flex; margin-inline: 16px;">
+                    <input type="radio" name="addTest-input-${qn}" class="me-2" value="B">
+                    <input type="text" class="addTest-text w-100" placeholder="Ответ 2">
+                </div>
+                <div class="addTest-answer-3" style="display: flex;">
+                    <input type="radio" name="addTest-input-${qn}" class="me-2" value="C">
+                    <input type="text" class="addTest-text w-100" placeholder="Ответ 3">
+                </div>
+            </div>
+        </div>
+
+        <hr>
+    `
+
+    document.querySelector('.addTest-container').insertAdjacentHTML('beforeend', template);
+}
+
+function addTest() {
+    let data = {}
+    let counter = 0;
+
+    document.querySelectorAll('.addTest-container > div').forEach(item => {
+        let ac = item.querySelector(`input[name="addTest-input-${counter}"]:checked`).value;
+
+        data[counter] = {
+            question: item.querySelector('.addTest-question').value,
+            answer: {
+                a1: item.querySelector('.addTest-answer-1 .addTest-text').value,
+                a2: item.querySelector('.addTest-answer-2 .addTest-text').value,
+                a3: item.querySelector('.addTest-answer-3 .addTest-text').value
+            },
+            correct: ac
+        }
+
+        counter++;
+    })
+
+    submitRequest(window.location.href + '/addTest', 'post', data)
+        .then(() => {
+            window.location.reload();
+        })
+}
+
+function openModal(element) {
+    element.showModal();
+}
+
+function closeModal(element) {
+    element.close();
 }
