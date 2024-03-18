@@ -40,6 +40,9 @@ const articleSchema = new Schema({
     questionsAndAnswers: {
         type: [qaSchema],
         _id: false
+    },
+    requiredTo: {
+        type: Array
     }
 })
 

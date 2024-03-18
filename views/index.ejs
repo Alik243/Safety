@@ -24,7 +24,7 @@
 
                 <div class="d-flex" style="color: #777;">
                     <i class="bi bi-person-circle me-2"></i>
-                    <div id="userRole"><%= job %></div>
+                    <div id="userJob"><%= job %></div>
                 </div>
 
                 <div class="find-container">
@@ -36,20 +36,20 @@
                 <div style="font-size: 36px; font-family: inter-medium;">Каталог</div>
 
                 <div class="catalog-allTypes">
-                    <div class="catalog-type active">
+                    <div class="catalog-type active" name="new" onclick="chooseCatalogType(this)">
                         <span>Новые</span>
                     </div>
-                    <div class="catalog-type" style="opacity: .5;">
+                    <div class="catalog-type" name="required" onclick="chooseCatalogType(this)">
                         <span>Обязательные</span>
                     </div>
-                    <div class="catalog-type" style="opacity: .5;">
+                    <div class="catalog-type" name="optional" onclick="chooseCatalogType(this)">
                         <span>Дополнительные</span>
                     </div>
                 </div>
 
                 <div class="articles-container">
                     <% if (role == 'admin') { %>
-                        <div class="article-card f-center" style="margin-bottom: 25px;" onclick="openModal(addArticleModal)">
+                        <div class="article-card addArticle-card f-center" onclick="openModal(addArticleModal)">
                             <i class="bi bi-plus-lg" style="font-size: 52px; color: #777;"></i>
                         </div>
                     <% } %>
@@ -87,7 +87,10 @@
     
                 <input type="text" id="add-name" placeholder="Имя пользователя">
                 
-                <input type="text" id="add-job" placeholder="Должность">
+                <select id="add-job" style="height: 30px;">
+                    <option value="Manager">Менеджер</option>
+                    <option value="Engineer">Инженер</option>
+                </select>
     
                 <div class="d-flex">
                     <button class="btn btn-secondary me-2 w-100" onclick="closeModal(addUserModal)">Закрыть</button>

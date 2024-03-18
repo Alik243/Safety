@@ -41,8 +41,16 @@ function getArticles() {
 getArticles();
 
 function renderArticles(article) {
+    let required = '';
+
+    if (article.requiredTo) {
+        article.requiredTo.forEach(item => {
+            required = required + ' ' + item;
+        })
+    }
+    
     let template = `
-        <div class="article-card" name="${article._id}" onclick="chooseArticle(this)">
+        <div class="article-card ${required}" name="${article._id}" onclick="chooseArticle(this)">
             <div class="d-flex">
                 <div class="article-text-container">
                     <div class="article-name">${article.name}</div>
@@ -73,16 +81,47 @@ function chooseArticle(article) {
     window.location.href = '/article/' + article.getAttribute('name');
 }
 
-// document.querySelector('#article-submit').addEventListener('click', () => {
-//     let data = {
-//         text: document.querySelector('#article-text').value
-//     }
+function chooseCatalogType(element) {
+    document.querySelectorAll('.catalog-type').forEach(item => {
+        item.classList.remove('active');
+    })
+    element.classList.add('active');
 
-//     submitRequest('/addArticle', 'post', data)
-//         .then((res) => {
-//             console.log('added article!')
-//         })
-// })
+    if (element.getAttribute('name') == 'new') {
+        document.querySelectorAll('.article-card').forEach(article => {
+            article.style.display = '';
+        })
+        return;
+    }
+    if (element.getAttribute('name') == 'required') {
+        let job = document.getElementById('userJob').innerText;
+
+        document.querySelectorAll('.article-card').forEach(article => {
+            if (article.classList.contains(job)) {
+                article.style.display = '';
+            } else {
+                article.style.display = 'none';
+            }
+        })
+
+        document.querySelector('.addArticle-card').style.display = '';
+        return;
+    }
+    if (element.getAttribute('name') == 'optional') {
+        let job = document.getElementById('userJob').innerText;
+
+        document.querySelectorAll('.article-card').forEach(article => {
+            if (!article.classList.contains(job)) {
+                article.style.display = '';
+            } else {
+                article.style.display = 'none';
+            }
+        })
+
+        document.querySelector('.addArticle-card').style.display = '';
+        return;
+    }
+}
 
 function getUsers() {
     document.querySelector('.users-container').innerText = '';
