@@ -56,14 +56,11 @@ app.use((req, res, next) => {
 })
 
 app.get('/login', (req, res) => {
-    const title = 'Login';
-
-    res.render(createPath('login'), { title });
+    res.render(createPath('login'));
 })
 
 app.post('/auth', (req, res) => {
     const user = req.body;
-    // let username = user.username;
 
     Users
         .findOne({ email: user.username })
@@ -73,7 +70,8 @@ app.post('/auth', (req, res) => {
             } else {
                 if (data.password == user.password) {
                     req.session.authenticated = true;
-                    req.session.username = data.name;
+                    req.session.name = data.name;
+                    req.session.email = data.email;
                     req.session.job = data.job;
                     req.session.role = data.role;
                     res.redirect('/');
@@ -88,12 +86,12 @@ app.post('/auth', (req, res) => {
 })
 
 app.get('/', (req, res) => {
-    const title = 'Home';
-    const username = req.session.username;
+    const name = req.session.name;
+    const email = req.session.email;
     const job = req.session.job;
     const role = req.session.role;
 
-    res.render(createPath('index'), { title, username, job, role });
+    res.render(createPath('index'), { name, email, job, role });
 })
 
 app.get('/logout', (req, res) => {
@@ -113,12 +111,22 @@ app.get('/getArticles', (req, res) => {
 })
 
 app.get('/article/:articleId', (req, res) => {
-    const title = 'Article';
-
-    const article = req.params.articleId;
     const role = req.session.role;
 
-    res.render(createPath('article'), { title, article, role });
+    Articles
+        .findOne({ _id: req.params.articleId })
+        .then((article) => {
+            article.passedCount++;
+
+            article
+                .save()
+                .catch((err) => console.log(err))
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+
+    res.render(createPath('article'), { role });
 })
 
 app.get('/article/:articleId/info', (req, res) => {
@@ -170,7 +178,25 @@ app.post('/article/:articleId/submitTest', (req, res) => {
                 }
             }
 
-            res.status(200).send(answers);
+            Users
+                .findOne({ email: req.session.email })
+                .then((user) => {
+                    let correctCount = 0;
+                    answers.forEach(answer => {
+                        if (answer) correctCount++;
+                    })
+                    
+                    let a = {
+                        name: article.name,
+                        test: correctCount + '/' + answers.length
+                    }
+                    user.passedArticles.push(a);
+
+                    user.save()
+                        .then(() => res.status(200).send(answers))
+                        .catch((err) => console.log(err))
+                })
+                .catch((err) => console.log(err))
         })
         .catch((err) => {
             console.log(err);
@@ -185,6 +211,18 @@ app.post('/addArticle', (req, res) => {
         .then(() => res.sendStatus(200))
         .catch((err) => console.log(err))
 })
+
+app.post('/getPassedArticles', (req, res) => {
+    Users
+        .findOne({ _id: req.body.userId })
+        .then((user) => {
+            res.status(200).send(user.passedArticles);
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+})
+
 
 app.get('/getUsers', (req, res) => {
     if (req.session.role != 'admin') return;

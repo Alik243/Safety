@@ -107,7 +107,7 @@ function renderUsers(user) {
                 <div style="width: 50%; color: #777">${user.job}</div>
             </div>
 
-            <i class="bi bi-three-dots"></i>
+            <i class="bi bi-three-dots" onclick="renderPassedArticles(this)"></i>
         </div>
     `
 
@@ -162,5 +162,34 @@ function addArticle() {
         .then(() => {
             closeModal(document.getElementById('addArticleModal'));
             window.location.reload();
+        })
+}
+
+function renderPassedArticles(element) {
+    document.querySelector('.passedArticle-container').innerText = '';
+
+    openModal(document.getElementById('passedArticleModal'));
+
+    submitRequest('/getPassedArticles', 'post', { userId: element.parentNode.getAttribute('name') })
+        .then((res) => {
+            res.forEach(article => {
+                let status = 'bi-x-circle-fill';
+                let answers = article.test.split('/');
+                if (Number(answers[0]) >= Number(answers[1]) * 0.5) {
+                    status = 'bi-check-circle-fill';
+                }
+
+                let template = `
+                    <div class="passedArticle-item">
+                        <i class="bi ${status}"></i>
+
+                        <div class="passedArticle-name">${article.name}</div>
+                        
+                        <div class="passedArticle-test">${article.test}</div>
+                    </div>
+                `
+
+                document.querySelector('.passedArticle-container').insertAdjacentHTML('beforeend', template)
+            });
         })
 }

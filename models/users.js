@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const passedQaSchema = new Schema({
+    name: String,
+    test: String,
+})
+
 const userSchema = new Schema({
     email: {
         type: String,
@@ -22,6 +27,10 @@ const userSchema = new Schema({
     role: {
         type: String,
         default: 'user'
+    },
+    passedArticles: {
+        type: [passedQaSchema],
+        // _id: false
     }
 })
 

@@ -50,7 +50,7 @@ header {
 main {
     display: flex;
     justify-content: center;
-    margin-top: 32px;
+    margin-block: 32px;
 }
 
 .main-container {
@@ -255,6 +255,27 @@ main {
 
 .addTest-item * {
     width: 100%;
+}
+
+.passedArticle-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 4px 8px;
+    border-bottom: 1px solid #333;
+}
+
+.passedArticle-item > :first-child {
+    width: 5%;
+}
+
+.passedArticle-name {
+    flex: 1;
+}
+
+.passedArticle-test {
+    width: 10%;
+    text-align: right;
 }
 
 /* Modal */

@@ -29,7 +29,7 @@ const articleSchema = new Schema({
         // required: true
     },
     passedCount: {
-        type: String,
+        type: Number,
         default: '0'
     },
     passingTime: {

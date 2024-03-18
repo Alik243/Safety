@@ -6,11 +6,11 @@
     <link rel="stylesheet" href="/css/index.css">
     <link rel="stylesheet" href="/css/bootstrap.css">
     <link rel="stylesheet" href="/css/bootstrap-icons.css">
-    <title><%= title %></title>
+    <title>Safety | Home</title>
 </head>
 <body>
     <header>
-        <div>My application</div>
+        <div>Safety</div>
 
         <input type="checkbox" id="isAdmin" hidden <% if (role == 'admin') { %> checked <% } %>>
 
@@ -20,7 +20,7 @@
     <main>
         <div class="main-container">
             <div class="head-container">
-                <div id="userName"><%= username %></div>
+                <div id="userName"><%= name %></div>
 
                 <div class="d-flex" style="color: #777;">
                     <i class="bi bi-person-circle me-2"></i>
@@ -109,6 +109,16 @@
                     <button class="btn btn-secondary me-2 w-100" onclick="closeModal(addArticleModal)">Закрыть</button>
     
                     <button class="btn btn-success ms-2 w-100" onclick="addArticle()">Добавить</button>
+                </div>
+            </dialog>
+
+            <dialog id="passedArticleModal" class="modal-container" style="width: 600px;">
+                <div style="font-size: 22px;">Пройденные статьи</div>
+
+                <div class="passedArticle-container"></div>
+                
+                <div class="d-flex justify-content-center mt-4">
+                    <button class="btn btn-secondary w-50" onclick="closeModal(passedArticleModal)">Закрыть</button>
                 </div>
             </dialog>
         <% } %>
