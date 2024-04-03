@@ -99,7 +99,33 @@ app.get('/logout', (req, res) => {
     res.redirect('/login');
 })
 
-app.get('/getArticles', (req, res) => {
+app.post('/getArticles', (req, res) => {
+    let filter = {};
+    switch (req.body.catalogType) {
+        case 'required':
+            filter.requiredTo = { $in: req.session.job.toLowerCase() };
+            break;
+        case 'optional':
+            filter.requiredTo = { $nin: req.session.job.toLowerCase() };
+            break;
+    }
+
+    let articleCount = 5;
+    if (req.session.role == 'admin') {
+        articleCount = 4;
+    }
+
+    Articles
+        .find(filter).limit(articleCount).sort({ _id: -1 })
+        .then((articles) => {
+            res.status(200).send(articles);
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+})
+
+app.get('/getAllArticles', (req, res) => {
     Articles
         .find()
         .then((articles) => {

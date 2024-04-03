@@ -1,11 +1,13 @@
 @font-face {
-    font-family: inter-medium;
+    font-family: inter;
     src: url(/css/Inter-Medium.ttf);
+    font-weight: 500;
 }
 
 @font-face {
-    font-family: inter-regular;
+    font-family: inter;
     src: url(/css/Inter-Regular.ttf);
+    font-weight: 400;
 }
 
 /* fast css */
@@ -26,9 +28,14 @@
     flex-wrap: wrap;
 }
 
+input {
+    cursor: pointer;
+}
+
 body {
     /* margin: 0; */
-    font-family: inter-regular !important;
+    font-family: inter !important;
+    font-weight: 400;
     color: #333 !important;
 }
 
@@ -63,12 +70,12 @@ main {
 }
 
 #userName {
-    font-family: inter-medium;
+    font-weight: 500;
     font-size: 24px;
 }
 
 #userJob {
-    font-family: inter-medium;
+    font-weight: 500;
 }
 
 .find-container {
@@ -102,7 +109,7 @@ main {
 .catalog-type span {
     margin-inline: 16px;
     font-size: 20px;
-    font-family: inter-medium;
+    font-weight: 500;
 }
 
 .catalog-type.active {
@@ -115,10 +122,9 @@ main {
     display: flex;
     flex-wrap: wrap;
     margin-top: 25px;
-    /* font-family: inter-regular; */
 }
 
-.article-card {
+.article-card, .optional-card {
     position: relative;
     width: 220px;
     height: 210px;
@@ -135,7 +141,7 @@ main {
 }
 
 .article-name {
-    font-family: inter-medium;
+    font-weight: 500;
     word-wrap: break-word;
     margin-bottom: 8px;
 }
@@ -176,14 +182,14 @@ main {
 }
 
 .setting-text {
-    font-family: inter-medium;
+    font-weight: 500;
 }
 
 .customButton {
     border: 0;
     border-radius: 4px;
     padding: 8px 16px;
-    font-family: inter-medium;
+    font-weight: 500;
 }
 
 .users-container {
@@ -193,14 +199,14 @@ main {
 .user-item {
     display: flex;
     justify-content: space-between;
-    font-family: inter-medium;
+    font-weight: 500;
     padding: 16px;
     border-bottom: 1px solid #333;
 }
 
 /* thisArticle elements */
 .thisArticle-name {
-    font-family: inter-medium;
+    font-weight: 500;
     font-size: 32px;
 }
 
@@ -213,7 +219,7 @@ main {
 }
 
 .thisArticleQuestion-container {
-    font-family: inter-medium;
+    font-weight: 500;
     font-size: 20px;
 }
 
@@ -226,7 +232,7 @@ main {
     display: flex;
     justify-content: right;
     margin-block: 40px;
-    font-family: inter-medium;
+    font-weight: 500;
     font-size: 24px;
 }
 
@@ -280,6 +286,11 @@ main {
 .passedArticle-test {
     width: 10%;
     text-align: right;
+}
+
+.allArticle-container > div {
+    /* display: flex; */
+    margin-bottom: 8px;
 }
 
 /* Modal */

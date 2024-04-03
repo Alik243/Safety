@@ -28,29 +28,26 @@ function logout() {
     submitRequest('/logout')
 }
 
-function getArticles() {
-    // document.querySelector('.articles-container').innerText = '';
+function getArticles(type) {
+    document.querySelectorAll('.article-card').forEach(card => card.remove())
 
-    submitRequest('/getArticles')
+    document.querySelectorAll('.catalog-type').forEach(item => {
+        item.classList.remove('active');
+    })
+    type.classList.add('active');
+
+    submitRequest('/getArticles', 'post', { catalogType: type.getAttribute('name') })
         .then((res) => {
             res.forEach(element => {
-                renderArticles(element)
+                renderCards(element)
             });
         })
 }
-getArticles();
+getArticles(document.getElementsByName('new')[0]);
 
-function renderArticles(article) {
-    let required = '';
-
-    if (article.requiredTo) {
-        article.requiredTo.forEach(item => {
-            required = required + ' ' + item;
-        })
-    }
-    
+function renderCards(article) {
     let template = `
-        <div class="article-card ${required}" name="${article._id}" onclick="chooseArticle(this)">
+        <div class="article-card" name="${article._id}" onclick="chooseArticle(this)">
             <div class="d-flex">
                 <div class="article-text-container">
                     <div class="article-name">${article.name}</div>
@@ -74,53 +71,32 @@ function renderArticles(article) {
         </div>
     `
 
-    document.querySelector('.articles-container').insertAdjacentHTML('beforeend', template)
+    document.querySelector('.allArticle-card').insertAdjacentHTML('beforebegin', template)
+}
+
+function showMoreArticles() {
+    openModal(document.getElementById('allArticleModal'));
+
+    submitRequest('/getAllArticles')
+        .then((res) => {
+            res.forEach(element => {
+                renderArticle(element)
+            });
+        })
+}
+
+function renderArticle(article) {
+    let template = `
+        <div class="" name="${article._id}" onclick="chooseArticle(this)">
+            <div>${article.name}</div>
+        </div>
+    `
+
+    document.querySelector('.allArticle-container').insertAdjacentHTML('afterbegin', template)
 }
 
 function chooseArticle(article) {
     window.location.href = '/article/' + article.getAttribute('name');
-}
-
-function chooseCatalogType(element) {
-    document.querySelectorAll('.catalog-type').forEach(item => {
-        item.classList.remove('active');
-    })
-    element.classList.add('active');
-
-    if (element.getAttribute('name') == 'new') {
-        document.querySelectorAll('.article-card').forEach(article => {
-            article.style.display = '';
-        })
-        return;
-    }
-    if (element.getAttribute('name') == 'required') {
-        let job = document.getElementById('userJob').innerText;
-
-        document.querySelectorAll('.article-card').forEach(article => {
-            if (article.classList.contains(job)) {
-                article.style.display = '';
-            } else {
-                article.style.display = 'none';
-            }
-        })
-
-        document.querySelector('.addArticle-card').style.display = '';
-        return;
-    }
-    if (element.getAttribute('name') == 'optional') {
-        let job = document.getElementById('userJob').innerText;
-
-        document.querySelectorAll('.article-card').forEach(article => {
-            if (!article.classList.contains(job)) {
-                article.style.display = '';
-            } else {
-                article.style.display = 'none';
-            }
-        })
-
-        document.querySelector('.addArticle-card').style.display = '';
-        return;
-    }
 }
 
 function getUsers() {

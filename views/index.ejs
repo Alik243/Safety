@@ -33,32 +33,36 @@
             </div>
 
             <div class="catalog-container">
-                <div style="font-size: 36px; font-family: inter-medium;">Каталог</div>
+                <div style="font-size: 36px; font-weight: 500;">Каталог</div>
 
                 <div class="catalog-allTypes">
-                    <div class="catalog-type active" name="new" onclick="chooseCatalogType(this)">
+                    <div class="catalog-type active" name="new" onclick="getArticles(this)">
                         <span>Новые</span>
                     </div>
-                    <div class="catalog-type" name="required" onclick="chooseCatalogType(this)">
+                    <div class="catalog-type" name="required" onclick="getArticles(this)">
                         <span>Обязательные</span>
                     </div>
-                    <div class="catalog-type" name="optional" onclick="chooseCatalogType(this)">
+                    <div class="catalog-type" name="optional" onclick="getArticles(this)">
                         <span>Дополнительные</span>
                     </div>
                 </div>
 
                 <div class="articles-container">
                     <% if (role == 'admin') { %>
-                        <div class="article-card addArticle-card f-center" onclick="openModal(addArticleModal)">
+                        <div class="optional-card addArticle-card f-center" onclick="openModal(addArticleModal)">
                             <i class="bi bi-plus-lg" style="font-size: 52px; color: #777;"></i>
                         </div>
                     <% } %>
+
+                    <div class="optional-card allArticle-card f-center" onclick="showMoreArticles()">
+                        <i class="bi bi-three-dots" style="font-size: 52px; color: #777;"></i>
+                    </div>
                 </div>
             </div>
 
             <% if (role == 'admin') { %>
                 <div class="catalog-container">
-                    <div style="font-size: 36px; font-family: inter-medium;">Пользователи</div>
+                    <div style="font-size: 36px; font-weight: 500;">Пользователи</div>
 
                     <div class="f-between">
                         <div class="setting-text" onclick="openModal(addUserModal)">
@@ -112,6 +116,22 @@
                     <button class="btn btn-secondary me-2 w-100" onclick="closeModal(addArticleModal)">Закрыть</button>
     
                     <button class="btn btn-success ms-2 w-100" onclick="addArticle()">Добавить</button>
+                </div>
+            </dialog>
+
+            <dialog id="allArticleModal" class="modal-container" style="width: 600px;">
+                <div class="allArticle-header" style="font-size: 22px;">Весь каталог</div>
+
+                <!-- <div class="articles-allTypes">
+                    <div class="articles-type active"></div>
+                    <div class="articles-type"></div>
+                    <div class="articles-type"></div>
+                </div> НУЖНО БУДЕТ ДОБАВИТЬ РАЗДЕЛЕНИЕ --> 
+
+                <div class="allArticle-container"></div>
+        
+                <div class="d-flex justify-content-center mt-4">
+                    <button class="btn btn-secondary w-50" onclick="closeModal(allArticleModal)">Закрыть</button>    
                 </div>
             </dialog>
 
