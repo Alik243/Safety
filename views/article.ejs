@@ -13,9 +13,15 @@
         <div onclick="backToMainMenu()">Safety</div>
 
         <% if (role == 'admin') { %>
-            <button class="customButton" style="background-color: #ddd; font-size: 14px;" onclick="openModal(addTestModal)">
-                Добавить тест
-            </button>
+            <div>
+                <button class="customButton" style="background-color: #ddd; font-size: 14px;" onclick="openModal(addTestModal)">
+                    Добавить тест
+                </button>
+
+                <button class="customButton" style="background-color: #9a0808; font-size: 14px;" onclick="deleteArticle()">
+                    Удалить статью
+                </button>
+            </div>
         <% } %>
     </header>
 

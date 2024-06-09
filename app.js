@@ -190,6 +190,15 @@ app.post('/article/:articleId/addTest', (req, res) => {
         })
 })
 
+app.get('/article/:articleId/deleteArticle', (req, res) => {
+    console.log(req.params.articleId);
+
+    Articles
+        .deleteOne({ _id: req.params.articleId })
+        .then(() => res.sendStatus(200))
+        .catch((err) => console.log(err))
+})
+
 app.post('/article/:articleId/submitTest', (req, res) => {
     Articles
         .findOne({ _id: req.params.articleId })

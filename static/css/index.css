@@ -50,6 +50,7 @@ header {
     height: 60px;
     background-color: #333;
     color: #fff;
+    z-index: 9999;
 
     display: flex;
     align-items: center;
@@ -315,4 +316,12 @@ main {
 
 .modal-container > *:last-child {
     margin-bottom: 0;
+}
+
+.bi-check-circle-fill {
+    color: green;
+}
+
+.bi-x-circle-fill {
+    color: red;
 }

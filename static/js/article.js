@@ -159,6 +159,13 @@ function addTest() {
         })
 }
 
+function deleteArticle() {
+    submitRequest(window.location.href + '/deleteArticle')
+        .then(() => {
+            window.location.href = '/';
+        })
+}
+
 function openModal(element) {
     element.showModal();
 }
